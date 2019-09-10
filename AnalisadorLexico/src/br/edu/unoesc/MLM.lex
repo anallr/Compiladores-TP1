@@ -13,25 +13,34 @@ private void imprimir(String descricao, String lexema) {
 %class AnalisadorLexico
 %type void
 
-RELOP = ("="|"<"|"<="|">"|">="|"!="|"NOT")
-MULOP = ("*"|"/"|"div"|"mod"|"and")
-ADDOP = ("+"|"-"|"or")
-LETTER = [_|a-z|A-Z][a-z|A-Z_]*
-ID = [a-z|A-Z][a-z|A-Z|0|[2-9]]*
-DIGIT = 0|[2-9]|0|[2-9]*
-UNSIGNED_INTEGER = 0|[2-9]|0|[2-9]*
-SIGN = "+"|"-"|_
-INTEGER_CONSTANT = 0|[2-9]|0|[2-9]*
+/*definicoes regulares*/
+
+delim = [ \t\n]
+ws = {delim}+
+letra = [A-Za-z]
+digito = [0-9]
+id = {letra} ({letra} : {digito})*
+numero = {digito} + (\. {digito}+)? (E[+\-]? {digito}+)?
+relop = ("="|"<"|"<="|">"|">="|"!="|NOT)
+mulop = ("*"|"/"|div|mod|and)
+addop = ("+"|"-"|or)
+unsigned_int = {digito} {digito}*
+sign = "+"|"-"|_
+scale_factor = "E" {sign} {unsigned_int}
+unsigned_real = {unsigned_int} (_|"." {digito}*)(_|{scale_factor})
+integer_constant = {unsigned_int}
+real_constant = {unsigned_real}
+//char_constant = {"'" 
 
 %%
 
-"if"                         { imprimir("Palavra reservada if", yytext()); }
-"then"                       { imprimir("Palavra reservada then", yytext()); }
-{LETTER}                     { imprimir("Letra", yytext()); }
-{ID}                         { imprimir("Identificador", yytext()); }
-{DIGIT}                      { imprimir("Digito", yytext()); }
-{RELOP}                     { imprimir("Operador de relacao", yytext()); }
-{ADDOP}                     { imprimir("Operador de adicao", yytext()); }
-{MULOP}                     { imprimir("Operador de multiplicacao ou divisao", yytext()); }
+if                         { imprimir("Palavra reservada if", yytext()); }
+then                       { imprimir("Palavra reservada then", yytext()); }
+{ws}                     {/* nenhuma acao e nenhum valor retornado */}
+{relop}                         { imprimir("operador de relacao", yytext()); }
+{mulop}                         { imprimir("operador de mult", yytext()); }
+{addop}                         { imprimir("operador de adicao", yytext()); }
+{unsigned_int}                         { imprimir("inteiro sem sinal", yytext()); }
+{id}                         { imprimir("Identificador", yytext()); }
 
 . { throw new RuntimeException("Caractere invalido \""+yytext() + "\" na linha "+yyline+", coluna "+yycolumn); }
