@@ -1,5 +1,5 @@
 /*codigo do usuario*/
-package br.edu.unoesc;
+package tp1compiladores;
 import java_cup.runtime.*;
 
 %%
