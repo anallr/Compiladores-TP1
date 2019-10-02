@@ -1,4 +1,3 @@
-package AnalisadorLexico;
 
 import java_cup.runtime.*;
 import java.util.*;
@@ -8,11 +7,11 @@ import java.io.*;
 parser code {:
 
     public void report_error(String message, Object info)  {
-        System.out.println(Warning -  + message);
+        System.out.println(message);
     }
 
     public void report_fatal_error(String message, Object info)  {
-        System.out.println(Error -  + message);
+        System.out.println(message);
         System.exit(-1);
     }
 
@@ -21,25 +20,26 @@ parser code {:
 
 terminal IF, THEN, ELSE, DO, WHILE, UNTIL, READ, WRITE, FALSE, TRUE;
 terminal PROGRAM, INTEGER, REAL, BOOLEAN, CHAR, BEGIN, END, LEFT, RIGHT;
-terminal ADDOP, RELOP, ASSIGN, MULOP, SEMI, COLON, COMMA;
+terminal ADDOP, RELOP, ASSIGN, MULOP, SEMI, COLON, COMMA, MINUS;
+terminal IDENTIFIER, INTEGER_CONSTANT, REAL_CONSTANT, CHAR_CONSTANT ;
 
 non terminal  program, decl_list, decl, ident_list, compound_stmt, stmt_list;
 non terminal  stmt, assign_stmt, if_stmt, cond, loop_stmt, stmt_prefix, stmt_suffix;
 non terminal  read_stmt, write_stmt, expr_list, expr, simple_expr, term, factor_a;
-non terminal  factor, constant, boolean_constant, identifier, type;
+non terminal  factor, constant, boolean_constant, type;
 
 
 
 start with program;
 
 
-program ::= PROGRAM identifier SEMI decl_list compound_stmt ;
+program ::= PROGRAM IDENTIFIER SEMI decl_list compound_stmt ;
 
 decl_list ::= decl_list  SEMI decl | decl ;
 
-decl ::= ident_list COLON type ;
+decl ::= ident_list COLON type;
 
-ident_list ::= ident_list  COMMA identifier | identifier ;
+ident_list ::= ident_list  COMMA IDENTIFIER | IDENTIFIER ;
 
 type ::= INTEGER | REAL | BOOLEAN | CHAR ;
 
@@ -49,7 +49,7 @@ stmt_list ::= stmt_list SEMI stmt | stmt ;
 
 stmt ::= assign_stmt | if_stmt | loop_stmt | read_stmt | write_stmt | compound_stmt ;
 
-assign_stmt ::= identifier ASSIGN expr ;
+assign_stmt ::= IDENTIFIER ASSIGN expr ;
 
 if_stmt ::= IF cond THEN stmt | IF cond THEN stmt ELSE stmt ;
 
@@ -73,10 +73,10 @@ simple_expr ::= term | simple_expr ADDOP term ;
 
 term ::= factor_a | term MULOP factor_a ;
 
-factor_a ::= ADDOP factor | factor ;
+factor_a ::= MINUS factor | factor ;
 
-factor ::= identifier | constant | LEFT expr RIGHT | RELOP factor ;
+factor ::= IDENTIFIER | constant | LEFT expr RIGHT | RELOP factor ;
 
-constant ::= INTEGER constant | REAL constant | CHAR constant | boolean_constant ;
+constant ::= INTEGER_CONSTANT | REAL_CONSTANT | CHAR_CONSTANT | boolean_constant ;
 
 boolean_constant ::= FALSE | TRUE ;
