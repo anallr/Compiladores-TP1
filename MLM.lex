@@ -10,6 +10,7 @@ private void imprimir(String descricao, String lexema) {
 	System.out.println(lexema + " -" + descricao);}
 %}
 
+%cup
 %public
 %class AnalisadorLexico
 %type void
@@ -20,11 +21,21 @@ delim = [ \t\n]
 ws = {delim}+
 letra = [A-Za-z]
 digito = 0 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9
-id = {letra} ({letra} : {digito})*
+identifier = {letra} ({letra} : {digito})*
 numero = {digito} + (\. {digito}+)? (E[+\-]? {digito}+)?
 relop = ("="|"<"|"<="|">"|">="|"!="|NOT)
 mulop = ("*"|"/"|div|mod|and)
 addop = ("+"|"-"|or)
+
+
+
+
+
+
+
+
+
+
 unsigned_int = {digito} {digito}*
 sign = "+"|"-"|_
 scale_factor = E {sign} {unsigned_int}
@@ -59,11 +70,11 @@ program = program {id} ";" {decl_list} {compound_stmt}
 
 %%
 
-if                         { imprimir("Palavra reservada if", yytext()); }
-then                       { imprimir("Palavra reservada then", yytext()); }
+if                         { return new Symbol(Sym.IF); }
+then                       { return new Symbol(Sym.THEN); }
 {ws}                       {/* nenhuma acao e nenhum valor retornado */}
-{relop}                    { imprimir("operador de relop", yytext()); }
-{mulop}                    { imprimir("operador de mulop", yytext()); }
+{relop}                    { return new Symbol(Sym.RELOP); }
+{mulop}                    { return new Symbol(Sym.MULOP); }
 {type}                     { imprimir("expressao de tipo", yytext()); }
 {addop}                    { imprimir("operador de addop", yytext()); }
 {unsigned_int}             { imprimir("inteiro sem sinal", yytext()); }
