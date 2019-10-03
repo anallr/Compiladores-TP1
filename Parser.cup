@@ -7,11 +7,11 @@ import java.io.*;
 parser code {:
 
     public void report_error(String message, Object info)  {
-        System.out.println(message);
+        System.out.println("Warning - " + message);
     }
 
     public void report_fatal_error(String message, Object info)  {
-        System.out.println(message);
+        System.out.println("Error - " + message);
         System.exit(-1);
     }
 
@@ -28,7 +28,7 @@ non terminal  stmt, assign_stmt, if_stmt, cond, loop_stmt, stmt_prefix, stmt_suf
 non terminal  read_stmt, write_stmt, expr_list, expr, simple_expr, term, factor_a;
 non terminal  factor, constant, boolean_constant, type;
 
-
+precedence left ELSE;
 
 start with program;
 
@@ -51,7 +51,7 @@ stmt ::= assign_stmt | if_stmt | loop_stmt | read_stmt | write_stmt | compound_s
 
 assign_stmt ::= IDENTIFIER ASSIGN expr ;
 
-if_stmt ::= IF cond THEN stmt | IF cond THEN stmt ELSE stmt ;
+if_stmt ::= IF cond THEN stmt  | IF cond THEN stmt ELSE stmt ;
 
 cond ::= expr ;
 

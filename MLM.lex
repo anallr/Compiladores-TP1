@@ -14,13 +14,14 @@ import java_cup.runtime.Symbol;
 /*expressoes regulares*/
 
 letra = [A-Za-z]
-digito = 0 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9
-identifier = {letra} ({letra} : {digito})*
+digito = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9
+identifier = {letra} ({letra} | {digito})*
 numero = {digito} + (\. {digito}+)? (E[+\-]? {digito}+)?
 relop = ("="|"<"|"<="|">"|">="|"!="|NOT)
 mulop = ("*"|"/"|div|mod|and)
 addop = ("+"|"-"|or)
 sign = "+"|"-"|_
+ignore = [\n| |\t]
 unsigned_int = {digito} {digito}*
 scale_factor = E {sign} {unsigned_int}
 unsigned_real = {unsigned_int} (_|"." {digito}*)(_|{scale_factor})
@@ -50,7 +51,7 @@ char_constant = "'" [\x00-\x7F] "'"
 	"("             			{return new Symbol(Sym.LEFT); }
 	")"             			{return new Symbol(Sym.RIGHT); }
 	"-"										{return new Symbol(Sym.MINUS); }
-	"="										{return new Symbol(Sym.ASSIGN); }
+	":="									{return new Symbol(Sym.ASSIGN); }
 
 	"while"								{return new Symbol(Sym.WHILE); }
 	"do"									{return new Symbol(Sym.DO); }
@@ -67,6 +68,7 @@ char_constant = "'" [\x00-\x7F] "'"
 	"inteiro"							{return new Symbol(Sym.INTEGER); }
 	"real"								{return new Symbol(Sym.REAL); }
 
+	{ignore}							{}
 	{integer_constant}		{return new Symbol(Sym.INTEGER_CONSTANT); }
 	{real_constant}				{return new Symbol(Sym.REAL_CONSTANT); }
 	{char_constant}				{return new Symbol(Sym.CHAR_CONSTANT); }

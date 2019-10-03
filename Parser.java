@@ -248,11 +248,11 @@ public class Parser extends java_cup.runtime.lr_parser {
 
 
     public void report_error(String message, Object info)  {
-        System.out.println(message);
+        System.out.println("Warning - " + message);
     }
 
     public void report_fatal_error(String message, Object info)  {
-        System.out.println(message);
+        System.out.println("Error - " + message);
         System.exit(-1);
     }
 

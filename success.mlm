@@ -1,0 +1,7 @@
+program swap;
+  iw2:boolean
+  begin
+    aux3 := aux2;
+    aux2 := aux1;
+    aux1 := aux3
+  end
