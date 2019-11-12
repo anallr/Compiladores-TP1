@@ -11,7 +11,7 @@ public class Main {
         String codigo = "success.mlm";
         Symbol parse_tree = null;
         try {
-            Parser p = new Parser(new AnalisadorLexico(new FileReader(codigo)));
+            parser p = new parser(new AnalisadorLexico(new FileReader(codigo)));
             parse_tree = p.debug_parse();
             System.out.println(parse_tree);
             System.out.println("Sucesso");

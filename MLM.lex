@@ -41,9 +41,9 @@ char_constant = "'" [\x00-\x7F] "'"
 	"read"								{return new Symbol(Sym.READ);}
 	"write"								{return new Symbol(Sym.WRITE);}
 
-	{addop}         			{ return new Symbol(Sym.THEN); }
-	{relop}         			{ return new Symbol(Sym.RELOP); }
-	{mulop}         			{ return new Symbol(Sym.MULOP); }
+	{addop}         			{ return new Symbol(Sym.THEN, yytext()); }
+	{relop}         			{ return new Symbol(Sym.RELOP, yytext()); }
+	{mulop}         			{ return new Symbol(Sym.MULOP, yytext()); }
 
 	";"										{return new Symbol(Sym.SEMI); }
 	":"             			{return new Symbol(Sym.COLON); }
@@ -57,8 +57,8 @@ char_constant = "'" [\x00-\x7F] "'"
 	"do"									{return new Symbol(Sym.DO); }
 	"until"								{return new Symbol(Sym.UNTIL); }
 
-	"true"								{return new Symbol(Sym.TRUE); }
-	"false"								{return new Symbol(Sym.FALSE); }
+	"true"								{return new Symbol(Sym.TRUE, yytext()); }
+	"false"								{return new Symbol(Sym.FALSE, yytext()); }
 
 	"begin"								{return new Symbol(Sym.BEGIN); }
 	"end"									{return new Symbol(Sym.END); }
@@ -69,10 +69,10 @@ char_constant = "'" [\x00-\x7F] "'"
 	"real"								{return new Symbol(Sym.REAL); }
 
 	{ignore}							{}
-	{integer_constant}		{return new Symbol(Sym.INTEGER_CONSTANT); }
-	{real_constant}				{return new Symbol(Sym.REAL_CONSTANT); }
-	{char_constant}				{return new Symbol(Sym.CHAR_CONSTANT); }
-	{identifier}					{return new Symbol(Sym.IDENTIFIER); }
+	{integer_constant}		{return new Symbol(Sym.INTEGER_CONSTANT, yytext()); }
+	{real_constant}				{return new Symbol(Sym.REAL_CONSTANT, yytext()); }
+	{char_constant}				{return new Symbol(Sym.CHAR_CONSTANT, yytext()); }
+	{identifier}					{return new Symbol(Sym.IDENTIFIER, yytext()); }
 
 
 }
