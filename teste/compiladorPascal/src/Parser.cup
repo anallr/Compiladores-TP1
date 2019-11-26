@@ -2,8 +2,7 @@
 import java_cup.runtime.*;
 import java.util.*;
 import java.io.*;
-import symbTable.*;
-import tipo.*;
+
 
 action code{:
   private HashMap<String, Symbol> table = new HashMap<String, Symbol>();
@@ -101,18 +100,13 @@ init with {:
 
 terminal IF, THEN, ELSE, DO, WHILE, UNTIL, READ, WRITE, FALSE, TRUE;
 terminal PROGRAM, INTEGER, REAL, BOOLEAN, CHAR, BEGIN, END, LEFT, RIGHT;
-terminal INTEGER_CONSTANT, REAL_CONSTANT, CHAR_CONSTANT, RELOP, ASSIGN, SEMI, COLON, COMMA, MINUS ;
-terminal String IDENTIFIER, ADDOP, MULOP;
+terminal ADDOP, RELOP, ASSIGN, MULOP, SEMI, COLON, COMMA, MINUS;
+terminal IDENTIFIER, INTEGER_CONSTANT, REAL_CONSTANT, CHAR_CONSTANT ;
 
-non terminal  program, decl_list, decl, compound_stmt;
-non terminal  List<String> stmt_list;
-non terminal  List<String> stmt_prefix;
-non terminal  List<String> ident_list;
-non terminal  stmt, assign_stmt, if_stmt, loop_stmt, stmt_suffix;
-non terminal  read_stmt, write_stmt, expr_list;
-non terminal  Exp identifier, factor, factor_a, constant, boolean_constant, expr, cond, simple_expr, term;
-non terminal  Tipo type;
-non terminal  String id;
+non terminal  program, decl_list, decl, ident_list, compound_stmt, stmt_list;
+non terminal  stmt, assign_stmt, if_stmt, cond, loop_stmt, stmt_prefix, stmt_suffix;
+non terminal  read_stmt, write_stmt, expr_list, expr, simple_expr, term, factor_a;
+non terminal  factor, constant, boolean_constant, type;
 
 precedence left ELSE;
 
@@ -149,7 +143,7 @@ stmt_list ::= stmt_list SEMI stmt | stmt ;
 
 stmt ::= assign_stmt | if_stmt | loop_stmt | read_stmt | write_stmt | compound_stmt ;
 
-assign_stmt ::= identifier:tva ASSIGN:assign expr:expr{:
+assign_stmt ::= IDENTIFIER:identifier ASSIGN:assign expr:expr{:
   if(! tva.tipo.getVal().equals(texp.tipo.getVal())) {
    	if(! texp.tipo.getVal().equals("error") && ! tva.tipo.getVal().equals("error")) {
    		if(! (tva.tipo.getVal().equals("real") && texp.tipo.getVal().equals("integer"))) {
@@ -368,21 +362,8 @@ factor_a ::= MINUS:sn factor:f
    					}
           :};
 
-factor ::= identifier:id {:
-  RESULT = id;
-
-:} | constant | LEFT expr RIGHT | RELOP factor ;
+factor ::= IDENTIFIER | constant | LEFT expr RIGHT | RELOP factor ;
 
 constant ::= INTEGER_CONSTANT | REAL_CONSTANT | CHAR_CONSTANT | boolean_constant ;
 
 boolean_constant ::= FALSE | TRUE ;
-
-identifier ::= IDENTIFIER:id {:
-  Simbolo t = null;
-    if((t = TabelaDeSimbolos.get(id.toLowerCase())) == null) {
-        parser.semantic_error(id.toString(), "unknow name");
-        RESULT = new Exp(Tipo.getTipo(Tipo.ERRO), "");
-    } else {
-        RESULT = new Exp(t.getTipo(), id.toString());
-    }
-:};
